@@ -1,0 +1,81 @@
+name: Build esp32s3-lvgl-terminal.idf firmware
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'release name'
+        required: true
+        default: 'v1.0.0'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build firmware with ESP-IDF
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5.4
+          target: esp32s3
+          path: '.'
+
+      - name: Prepare firmware files
+        run: |
+          mkdir -p release
+
+          # Copy bin files from build output
+          cp build/bootloader/bootloader.bin release/bootloader.bin
+          cp build/partition_table/partition-table.bin release/partition-table.bin
+          cp build/ota_data_initial.bin release/ota_data_initial.bin
+          cp build/esp32s3-lvgl-terminal.idf.bin release/esp32s3-lvgl-terminal.idf.bin
+
+          # Prepare flash package (scripts for Windows users)
+          cp -r scripts flash_pkg
+          mkdir -p flash_pkg/bin
+          cp build/bootloader/bootloader.bin flash_pkg/bin/bootloader.bin
+          cp build/partition_table/partition-table.bin flash_pkg/bin/partition-table.bin
+          cp build/ota_data_initial.bin flash_pkg/bin/ota_data_initial.bin
+          cp build/esp32s3-lvgl-terminal.idf.bin flash_pkg/bin/esp32s3-lvgl-terminal.idf.bin
+
+          # Create flash.zip
+          (cd flash_pkg && zip -r ../release/flash.zip .)
+
+          # Build info
+          echo "Build Date: $(date -u)" > release/build-info.txt
+          echo "Git Commit: ${{ github.sha }}" >> release/build-info.txt
+          echo "Git Branch: ${{ github.ref_name }}" >> release/build-info.txt
+          echo "IDF Version: v5.5.4" >> release/build-info.txt
+          echo "Target: esp32s3" >> release/build-info.txt
+
+      - name: Upload firmware artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32s3-lvgl-terminal-idf-firmware
+          path: release/
+
+      - name: Create Release
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          name: ${{ github.event.inputs.tag_name }}
+          files: |
+            release/bootloader.bin
+            release/partition-table.bin
+            release/ota_data_initial.bin
+            release/esp32s3-lvgl-terminal.idf.bin
+            release/flash.zip
+            release/build-info.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

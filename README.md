@@ -228,15 +228,29 @@ idf.py -p COM5 flash monitor
 
 ### 6. 免环境烧录
 
-> 如果你不想搭建 ESP-IDF 开发环境，可以使用预编译的固件直接烧录。
+> 如果不想搭建 ESP-IDF 开发环境，可以使用编译好的固件直接烧录。
 
-**下载烧录工具**：[flash.zip](https://github.com/Lee-Stone/esp32s3-lvgl-terminal/releases/latest/download/flash.zip)（待发布）
+**下载烧录工具**：[flash.zip](https://github.com/Lee-Stone/esp32s3-lvgl-terminal.idf/releases/latest/download/flash.zip)
 
-**烧录步骤**：
+**烧录程序**：
 
-1. 解压烧录工具，双击 `flash.bat`（若提示有风险，右击以**管理员身份运行**）
-2. 选择开发板的串口序号，输入 **y** 开始烧录
-3. 烧录完成后提示 **Flash Successful**
+- 解压**烧录工具**，双击文件夹下的 **flash.bat** 文件（若提示有风险，右击以**管理员身份运行**）。
+
+  ![25](images/25.png)
+
+- 按下开发板的BOOT按键，再按下RST按键松开，最后松开BOOT按键进入下载模式。
+
+- 选择开发板的串口序号，输入 **y** 确定后开始烧录。
+
+  ![26](images/26.png)
+
+  ![27](images/27.png)
+
+- 烧录完成之后提示 **Flash Successful**。
+
+  ![28](images/28.png)
+
+**提示**：烧录工具中包含工程编译出来的 **bin** 文件。
 
 ## ⚠️ 注意事项
 

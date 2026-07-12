@@ -1,0 +1,12 @@
+idf_component_register(SRCS "main.c"
+                    INCLUDE_DIRS "."
+                    REQUIRES rgb_set
+                    REQUIRES key_set
+                    REQUIRES timer_set
+                    REQUIRES adc_set
+                    REQUIRES uart_set
+                    REQUIRES lcd_set
+                    REQUIRES touch_set
+                    REQUIRES lvgl_set
+                    REQUIRES ui_set
+                    REQUIRES task_set)

@@ -44,7 +44,7 @@
 - ✅ **日历**：日历信息查看
 - ✅ **电源管理**：使用 5V USB 或 4.2V 锂电池供电，接上锂电池时插入 USB 可边充边放
 
-**视频演示：**
+![功能展示](images/功能展示.png)**视频演示：**
 
 - [LVGL+Freertos 开发基于 ESP32S3 的智能终端系统_哔哩哔哩](https://www.bilibili.com/video/BV1xu4m1c74M/)
 - [LVGL 基于 ESP32S3 的智能终端 PLUS_哔哩哔哩](https://www.bilibili.com/video/BV1eXSuBkEo8/)

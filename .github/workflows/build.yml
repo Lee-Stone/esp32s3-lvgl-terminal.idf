@@ -27,6 +27,11 @@ jobs:
           esp_idf_version: v5.5.4
           target: esp32s3
           path: '.'
+          # v5.5.4 镜像自带的 idf-component-manager (2.4.6) 在解析新版组件清单
+          # (esp_lvgl_adapter 0.7.0 / esp_lv_decoder 0.4.3) 时，会因引用了
+          # LVGL8 中不存在的 Kconfig 符号 (LV_USE_LIBPNG 等) 而报
+          # "Missing required kconfig option after retry"，先升级到 2.5.2。
+          command: python -m pip install idf-component-manager==2.5.2 && idf.py build
 
       - name: Prepare firmware files
         run: |

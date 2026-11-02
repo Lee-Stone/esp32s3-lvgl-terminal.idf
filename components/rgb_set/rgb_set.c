@@ -19,6 +19,9 @@
 
 void rgb_init(void)
 {
+    // 新板无 RGB LED，直接跳过
+    if (RGB_R_PIN < 0 && RGB_G_PIN < 0 && RGB_B_PIN < 0) return;
+
     // 配置 LEDC 定时器
     ledc_timer_config_t timer_conf = {
         .speed_mode      = RGB_LEDC_MODE,
@@ -73,6 +76,9 @@ void rgb_init(void)
 
 void rgb_set_color(uint16_t r_duty, uint16_t g_duty, uint16_t b_duty)
 {
+    // 新板无 RGB LED，直接跳过
+    if (RGB_R_PIN < 0 && RGB_G_PIN < 0 && RGB_B_PIN < 0) return;
+
     // 限制占空比范围（0~1023）
     if (r_duty > RGB_DUTY_MAX) r_duty = RGB_DUTY_MAX;
     if (g_duty > RGB_DUTY_MAX) g_duty = RGB_DUTY_MAX;

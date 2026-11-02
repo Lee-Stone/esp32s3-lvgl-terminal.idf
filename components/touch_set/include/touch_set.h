@@ -2,17 +2,16 @@
 #define TOUCH_SET_H
 
 #include "driver/gpio.h"
-#include "softspi_master.h"
-#include "esp_lcd_touch_xpt2046.h"
+#include "driver/i2c_master.h"
+#include "esp_lcd_touch_ft5x06.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_io_interface.h"
 
-// XPT2046 引脚定义
-#define TOUCH_CLK_PIN   GPIO_NUM_15
-#define TOUCH_CS_PIN    GPIO_NUM_7
-#define TOUCH_DIN_PIN   GPIO_NUM_6   // MOSI
-#define TOUCH_DO_PIN    GPIO_NUM_5   // MISO
-#define TOUCH_IRQ_PIN   GPIO_NUM_4   // 中断引脚
+// FT6336(FT5x06 系列) I2C 触摸引脚定义（对应原理图 Schematic1_1 ESP32S3智能终端）
+#define TOUCH_SDA_PIN   GPIO_NUM_3
+#define TOUCH_SCL_PIN   GPIO_NUM_18
+#define TOUCH_RST_PIN   GPIO_NUM_8
+#define TOUCH_INT_PIN   GPIO_NUM_46   // 中断引脚
 
 // 屏幕分辨率
 #define TOUCH_WIDTH     320

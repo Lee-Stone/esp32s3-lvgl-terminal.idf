@@ -9,19 +9,16 @@
 // ADC 采集引脚（GPIO1 对应 ADC1_CH0）
 #define ADC_BATTERY_CHANNEL  0
 
-// 分压电阻（单位：KΩ）
-#define BATTERY_R_SERIES   10.0f   // 串联电阻（上）
-#define BATTERY_R_PARALLEL 5.1f    // 并联电阻（下）
+// 分压电阻（单位：KΩ），新板 BAT -> R9(18K) -> IO1 -> R10(68K) -> GND
+// 满电 4.2V 时 IO1 处约 4.2 x 68/(18+68) ≈ 3.32V，在 12dB 衰减量程内
+#define BATTERY_R_SERIES   18.0f   // 串联电阻（上，R9）
+#define BATTERY_R_PARALLEL 68.0f   // 并联电阻（下，R10）
 
 // 电池满电电压
 #define BATTERY_FULL_VOLTAGE  4.2f
 
-// MOS管压降补偿系数（背对背AO3406 N-MOS导致的压降）
-// 电路结构：BAT -> [MOS] -> 分压电阻 -> ADC
-// 实测满电4.2V时，MOS后分压前电压约为2.7V（两个AO3406的Vds压降约1.5V）
-// 补偿系数 = 电池满电电压 / MOS后满电电压 = 4.2 / 2.7 ≈ 1.556
-#define BATTERY_MOS_V_AFTER        2.7f
-#define BATTERY_MOS_COMPENSATION   (BATTERY_FULL_VOLTAGE / BATTERY_MOS_V_AFTER)
+// 新板分压网络直接接在 BAT 上，无 MOS 压降，补偿系数为 1
+#define BATTERY_MOS_COMPENSATION   1.0f
 
 /**
  * @brief 初始化 ADC 电池电压采集

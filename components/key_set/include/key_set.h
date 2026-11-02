@@ -3,10 +3,10 @@
 
 #include "driver/gpio.h"
 
-// 按键引脚定义
-#define KEY_1_PIN  GPIO_NUM_2   // 按键1
-#define KEY_2_PIN  GPIO_NUM_45  // 按键2
-#define KEY_3_PIN  GPIO_NUM_46  // 按键3
+// 按键引脚定义（新板仅有 BOOT 按键，对应原理图 Schematic1_1）
+#define KEY_1_PIN  GPIO_NUM_0       // BOOT 按键
+#define KEY_2_PIN  GPIO_NUM_NC      // 新板无按键2
+#define KEY_3_PIN  GPIO_NUM_NC      // 新板无按键3
 
 /**
  * @brief 初始化按键

@@ -2,7 +2,7 @@
 #include "xiaozhi_set.h"
 #include "task_set.h"
 
-static i2s_chan_handle_t pdm_rx_chan = NULL;
+static i2s_chan_handle_t mic_rx_chan = NULL;
 static esp_xiaozhi_chat_handle_t chat_hd = 0;
 static audio_stream_handle_t tts_stream = NULL;
 static OpusDecoder *opus_dec = NULL;
@@ -104,20 +104,26 @@ static void xiaozhi_audio_event(const uint8_t *data, int len, void *ctx)
 
 void xiaozhi_init(void)
 {
-    // (1) I2S0 PDM RX 麦克风
-    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER);
-    i2s_new_channel(&chan_cfg, NULL, &pdm_rx_chan);
+    // (1) I2S1 RX 数字麦克风(MSM261S4030H0R，24bit数据左对齐在32bit槽，LEFT通道)
+    //     与参考工程 xiaozhi-esp32/esp32s3-terminal 的 NoAudioCodecSimplex 配置一致；
+    //     麦克风与喇叭分属 I2S1/I2S0 两个控制器，避免共用时钟互相影响
+    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_1, I2S_ROLE_MASTER);
+    i2s_new_channel(&chan_cfg, NULL, &mic_rx_chan);
 
-    i2s_pdm_rx_config_t pdm_cfg = {
-        .clk_cfg  = I2S_PDM_RX_CLK_DEFAULT_CONFIG(16000),
-        .slot_cfg = I2S_PDM_RX_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO),
+    i2s_std_config_t mic_cfg = {
+        .clk_cfg  = I2S_STD_CLK_DEFAULT_CONFIG(16000),
+        .slot_cfg = I2S_STD_PHILIPS_SLOT_DEFAULT_CONFIG(I2S_DATA_BIT_WIDTH_32BIT, I2S_SLOT_MODE_MONO),
         .gpio_cfg = {
-            .clk = XIAOZHI_PDM_CLK,
-            .din = XIAOZHI_PDM_DATA,
+            .mclk = I2S_GPIO_UNUSED,
+            .bclk = MIC_I2S_SCK,
+            .ws   = MIC_I2S_WS,
+            .dout = I2S_GPIO_UNUSED,
+            .din  = MIC_I2S_DIN,
         },
     };
-    i2s_channel_init_pdm_rx_mode(pdm_rx_chan, &pdm_cfg);
-    i2s_channel_enable(pdm_rx_chan);
+    mic_cfg.slot_cfg.slot_mask = I2S_STD_SLOT_LEFT;
+    i2s_channel_init_std_mode(mic_rx_chan, &mic_cfg);
+    i2s_channel_enable(mic_rx_chan);
 
     // (2) 初始化小智对话
     esp_mcp_t *mcp = NULL;
@@ -147,7 +153,8 @@ void xiaozhi_init(void)
 
 void xiaozhi_task(void *pvParameters)
 {
-    uint8_t pdm_buf[2048] = {0};
+    static int32_t mic_raw[1024];
+    static int16_t mic_pcm[1024];
 
     while (1) {
         if (app.xiaozhi.xiaozhi_start) {
@@ -196,9 +203,18 @@ void xiaozhi_task(void *pvParameters)
         // 启动成功，开始对话
         else if (app.xiaozhi.xiaozhi_status == 3) {
             size_t bytes_read = 0;
-            i2s_channel_read(pdm_rx_chan, pdm_buf, sizeof(pdm_buf), &bytes_read, pdMS_TO_TICKS(60));
-            if (bytes_read > 0) {
-                esp_xiaozhi_chat_send_audio_data(chat_hd, (const char *)pdm_buf, bytes_read);
+            i2s_channel_read(mic_rx_chan, mic_raw, sizeof(mic_raw), &bytes_read, pdMS_TO_TICKS(60));
+            int samples = bytes_read / sizeof(int32_t);
+            for (int i = 0; i < samples; i++) {
+                // 24bit 数据在 32bit 槽高位，右移 12 位转 16bit PCM 并限幅
+                int32_t v = mic_raw[i] >> 12;
+                if (v > INT16_MAX) v = INT16_MAX;
+                else if (v < -INT16_MAX) v = -INT16_MAX;
+                mic_pcm[i] = (int16_t)v;
+            }
+            if (samples > 0) {
+                esp_xiaozhi_chat_send_audio_data(chat_hd, (const char *)mic_pcm,
+                                                 samples * sizeof(int16_t));
             }
         }
         vTaskDelay(pdMS_TO_TICKS(60));

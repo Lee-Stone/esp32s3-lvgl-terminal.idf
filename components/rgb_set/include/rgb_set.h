@@ -4,9 +4,10 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 
-#define RGB_R_PIN  GPIO_NUM_21
-#define RGB_G_PIN  GPIO_NUM_47
-#define RGB_B_PIN  GPIO_NUM_48
+// 新板（原理图 Schematic1_1）无 RGB LED，引脚置 NC，rgb_init/rgb_set_color 直接跳过
+#define RGB_R_PIN  GPIO_NUM_NC
+#define RGB_G_PIN  GPIO_NUM_NC
+#define RGB_B_PIN  GPIO_NUM_NC
 
 // LEDC PWM 配置
 #define RGB_LEDC_TIMER       LEDC_TIMER_0      // 定时器

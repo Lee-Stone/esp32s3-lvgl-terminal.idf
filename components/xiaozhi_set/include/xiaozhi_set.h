@@ -3,7 +3,7 @@
 
 #include "driver/gpio.h"
 #include "esp_heap_caps.h"
-#include "driver/i2s_pdm.h"
+#include "driver/i2s_std.h"
 #include "esp_xiaozhi_chat.h"
 #include "esp_xiaozhi_info.h"
 #include "esp_mcp_engine.h"
@@ -12,9 +12,10 @@
 #include "audio_stream.h"
 #include "opus.h"
 
-// PDM 麦克风引脚
-#define XIAOZHI_PDM_CLK   GPIO_NUM_38
-#define XIAOZHI_PDM_DATA  GPIO_NUM_39
+// I2S 数字麦克风(MSM261) 引脚（按原理图 Schematic1_1 网络表逐项核对）
+#define MIC_I2S_SCK       GPIO_NUM_11   // I_SCK
+#define MIC_I2S_WS        GPIO_NUM_13   // I_WS
+#define MIC_I2S_DIN       GPIO_NUM_12   // I_SD
 
 /**
  * @brief 小智对话初始化

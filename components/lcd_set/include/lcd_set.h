@@ -9,14 +9,14 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_vendor.h"
 
-// LCD 引脚定义
-#define LCD_SCK_PIN     GPIO_NUM_12
-#define LCD_MOSI_PIN    GPIO_NUM_11
-#define LCD_MISO_PIN    GPIO_NUM_13
-#define LCD_CS_PIN      GPIO_NUM_10
-#define LCD_DC_PIN      GPIO_NUM_9
-#define LCD_LED_PIN     GPIO_NUM_14
-#define LCD_RST_PIN     GPIO_NUM_NC
+// LCD 引脚定义（按原理图 Schematic1_1 网络表逐项核对）
+#define LCD_SCK_PIN     GPIO_NUM_15
+#define LCD_MOSI_PIN    GPIO_NUM_7
+#define LCD_MISO_PIN    GPIO_NUM_NC   // 触摸LCD接口无 MISO
+#define LCD_CS_PIN      GPIO_NUM_4
+#define LCD_DC_PIN      GPIO_NUM_6
+#define LCD_LED_PIN     GPIO_NUM_16
+#define LCD_RST_PIN     GPIO_NUM_5
 
 // LCD 分辨率
 #define LCD_WIDTH       320

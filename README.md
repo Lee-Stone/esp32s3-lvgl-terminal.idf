@@ -44,10 +44,20 @@
 - ✅ **日历**：日历信息查看
 - ✅ **电源管理**：使用 5V USB 或 4.2V 锂电池供电，接上锂电池时插入 USB 可边充边放
 
-![功能展示](images/功能展示.png)**视频演示：**
+![功能展示](images/功能展示.png)
+
+**视频演示：**
 
 - [LVGL+Freertos 开发基于 ESP32S3 的智能终端系统_哔哩哔哩](https://www.bilibili.com/video/BV1xu4m1c74M/)
 - [LVGL 基于 ESP32S3 的智能终端 PLUS_哔哩哔哩](https://www.bilibili.com/video/BV1eXSuBkEo8/)
+
+**项目教程：**
+
+- [LVGL+FreeRTOS开发基于ESP32S3的智能终端项目实战教程(Arduino/IDF)_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1aP4F69EDk?spm_id_from=333.788.videopod.sections&vd_source=b2115ccf4e995ec04004dc3600b1cecb)
+
+**开发板链接：**
+
+- [ESP32S3智能终端开发板](https://c.tb.cn/h.jgUCDzlfXCHbVxS?tk=A2tb6aqveNl)（有需要可以购买）
 
 ## 📁 项目结构
 
@@ -81,8 +91,7 @@ esp32s3-lvgl-terminal.idf/
 ├── hardware/                       # 硬件设计文件
 │   ├── SCH_Schematic_*.pdf         # 原理图 PDF
 │   ├── Gerber_PCB_*.zip            # PCB Gerber 文件
-│   ├── BOM_PCB_*.xlsx              # BOM 采购清单
-│   └── InteractiveBOM_PCB_*.html   # 交互式 BOM 焊接辅助
+│   └──BOM_PCB_*.xlsx               # BOM 采购清单
 ├── LICENSE                         # 开源协议
 └── README.md                       # 项目说明
 ```
@@ -118,7 +127,7 @@ esp32s3-lvgl-terminal.idf/
 
 ![硬件V2-反面](images/硬件V2-反面.png)
 
-### 4. **硬件原理图**
+### 4. 硬件原理图
 
 ![硬件V2-原理图](images/硬件V2-原理图.png)
 
@@ -134,7 +143,6 @@ esp32s3-lvgl-terminal.idf/
 
 - 参考 `hardware/` 目录中的 BOM 表（`.xlsx`）
 - BOM 表包含元器件型号、数量和购买链接
-- 打开 `hardware/` 目录中的 交互式 BOM（`.html`），可在浏览器中直观查看每个元器件在 PCB 上的焊接位置，大幅提升焊接效率
 - 板上元器件都标注了位号，根据 BOM 表焊接
 
 ## 🔧 软件配置
